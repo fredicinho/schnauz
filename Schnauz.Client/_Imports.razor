@@ -1,0 +1,20 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.JSInterop
+@using Schnauz.Shared
+@using Schnauz.Shared.Dtos
+@using Schnauz.Shared.Queries
+@using Schnauz.Shared.Commands
+
+@using Schnauz.Client
+@using Schnauz.Client.Components.Validations
+
+@inject NavigationManager NavigationManager
+@inject Schnauz.Client.Services.ToastService ToastService
+@inject Schnauz.Shared.Interfaces.IQueryExecutor QueryExecutor
+@inject Schnauz.Shared.Interfaces.ICommandExecutor CommandExecutor

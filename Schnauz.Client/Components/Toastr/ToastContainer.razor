@@ -1,0 +1,80 @@
+﻿@inject ToastService _toastService
+@using System.Timers
+@using Schnauz.Client.Services
+
+@if (_toastList.Any())
+{
+    <div class="toast-container d-print-none" style="z-index: 9999;">
+        @foreach (var toast in _toastList.OrderBy(x => x.DateTime))
+        {
+            <Toast Model="@toast" OnClose="RemoveToast" />
+        }
+    </div>
+}
+
+@code
+{
+    private List<ToastModel> _toastList = new List<ToastModel>();
+
+
+    protected override void OnInitialized()
+    {
+        _toastService.OnShow += ShowToast;
+    }
+
+    private void ShowToast(ToastLevel level, string message, string title)
+    {
+        // Workaround as mono is bugged and does not know timezone (DateTime.Now is same like UtcNow)
+        // TODO: Make some general method. and make it more nice. For important data create datetime on backend.
+        var utcDateTime = DateTime.UtcNow;
+        var currentDateTime = utcDateTime.AddHours(1);
+        if ((utcDateTime.Month > 3 && utcDateTime.Month < 10)
+            || (utcDateTime.Month == 10 && utcDateTime.Day < 27))
+        {
+            currentDateTime = currentDateTime.AddHours(1);
+        }
+
+        var toast = new ToastModel
+            {
+                Id = Guid.NewGuid(),
+                DateTime = currentDateTime,
+                Message = message,
+                Title = string.IsNullOrWhiteSpace(title) ? level.ToString() : title,
+                Level = level
+            };
+
+        _toastList.Add(toast);
+
+        var timeout = GetDuration(level);
+        var toastTimer = new Timer(timeout);
+        toastTimer.Elapsed += (sender, args) => { RemoveToast(toast.Id); };
+        toastTimer.AutoReset = false;
+        toastTimer.Start();
+
+        StateHasChanged();
+    }
+
+    private void RemoveToast(Guid toastId)
+    {
+        InvokeAsync(() =>
+        {
+            var toastInstance = _toastList.SingleOrDefault(x => x.Id == toastId);
+            if (toastInstance != null)
+            {
+                _toastList.Remove(toastInstance);
+                StateHasChanged();
+            }
+        });
+    }
+
+    private int GetDuration(ToastLevel level)
+    {
+        var baseTime = 5000;
+        return level switch
+        {
+            ToastLevel.Error => baseTime * 3,
+            ToastLevel.Warning => baseTime * 2,
+            _ => baseTime
+        };
+    }
+}

@@ -1,0 +1,44 @@
+﻿<div class="toast show" role="alert">
+    <div class="toast-header d-flex justify-content-between align-items-center @_style">
+        <div class="d-flex align-items-center">
+            <i class="@_icon"></i>&nbsp;&nbsp;
+            <span class="fw-bold">@Model.Title</span>
+        </div>
+        <div class="d-flex align-items-center">
+            <small>@Model.DateTime.ToString("H:mm:ss")</small>
+            <button type="button" class="btn-close" aria-label="Close" @onclick="Close"></button>
+        </div>
+    </div>
+    <div class="toast-body bg-light">
+        @Model.Message
+    </div>
+</div>
+
+@code
+{
+    [Parameter, EditorRequired] public EventCallback<Guid> OnClose { get; set; }
+    [Parameter, EditorRequired] public ToastModel Model { get; set; } = null!;
+
+    private string _icon = string.Empty;
+    private string _style = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        if (Model != null)
+        {
+            (_style, _icon) = Model.Level switch
+            {
+                ToastLevel.Info => ("bg-info text-light", "fas fa-info"),
+                ToastLevel.Success => ("bg-success text-light", "fas fa-check"),
+                ToastLevel.Warning => ("bg-warning text-dark", "fas fa-exclamation-triangle"),
+                ToastLevel.Error => ("bg-danger text-light", "fas fa-exclamation-circle"),
+                _ => throw new ArgumentOutOfRangeException(nameof(Model.Level), Model.Level, null)
+            };
+        }
+    }
+
+    protected async Task Close()
+    {
+        await OnClose.InvokeAsync(Model.Id);
+    }
+}

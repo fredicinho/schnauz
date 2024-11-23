@@ -1,0 +1,22 @@
+﻿<div class="@($"text-danger") mt-3">
+    @if (_isFluentValidationOn)
+    {
+        <FluentValidation />
+    }
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+</div>
+
+@inject IServiceProvider _sp
+@code {
+
+    private bool _isFluentValidationOn = false;
+
+    protected override void OnInitialized()
+    {
+        if (_sp.GetService(typeof(ValidationProvider)) != null)
+        {
+            _isFluentValidationOn = true;
+        }
+    }
+}

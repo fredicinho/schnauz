@@ -1,0 +1,42 @@
+﻿@using System.Linq.Expressions
+
+@typeparam TValue
+@implements IDisposable
+
+@if (EditContext != null)
+{
+    @foreach (var message in EditContext.GetValidationMessages(_fieldIdentifier))
+    {
+        <span class="text-danger" style="font-size: 90%;">
+            <i class="fas fa-exclamation-circle"></i> @message
+        </span>
+    }
+}
+
+@code {
+    [CascadingParameter] private EditContext? EditContext { get; set; }
+
+    [Parameter] public Expression<Func<TValue>> For { get; set; } = null!;
+
+    private FieldIdentifier _fieldIdentifier;
+
+    protected override void OnInitialized()
+    {
+        if (EditContext == null)
+        {
+            throw new NullReferenceException($"{nameof(FluentValidation)} must be placed within an {nameof(EditForm)}");
+        }
+        _fieldIdentifier = FieldIdentifier.Create(For);
+        EditContext.OnValidationStateChanged += HandleValidationStateChanged;
+    }
+
+    private void HandleValidationStateChanged(object? sender, ValidationStateChangedEventArgs args) => StateHasChanged();
+
+    public void Dispose()
+    {
+        if (EditContext != null)
+        {
+            EditContext!.OnValidationStateChanged -= HandleValidationStateChanged;
+        }
+    }
+}
