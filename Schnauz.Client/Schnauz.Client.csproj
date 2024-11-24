@@ -28,4 +28,8 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <AdditionalFiles Include="Pages\HelloWorld.razor" />
+  </ItemGroup>
+
 </Project>

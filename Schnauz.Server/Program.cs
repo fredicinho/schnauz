@@ -15,6 +15,13 @@ builder.Services
     .AddCqrs()
     .AddValidations();
 
+// Add the Orleans Cluster Client
+builder.Host.UseOrleansClient(clientBuilder =>
+{
+    clientBuilder.UseLocalhostClustering();
+});
+
+
 var app = builder.Build();
 app.MapControllers();
 

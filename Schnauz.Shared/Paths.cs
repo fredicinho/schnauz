@@ -4,6 +4,7 @@ public static class Paths
 {
     public const string Weather = "weather";
     public const string Form = "form";
+    public const string HelloWorld = "hello-world";
 }
 
 public static class ApiPaths

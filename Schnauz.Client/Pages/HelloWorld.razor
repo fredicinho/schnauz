@@ -1,0 +1,25 @@
+﻿@attribute [Route(Paths.HelloWorld)]
+
+<PageTitle>Hello World to Grain</PageTitle>
+
+<h1>Hello</h1>
+
+<p>This component demonstrates showing data from the Grain.</p>
+
+@if (_response == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+<p>@_response.Response</p>
+}
+
+@code {
+    private HelloWorldDto? _response;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _response = await QueryExecutor.Send(new HelloWorldQuery());
+    }
+}
