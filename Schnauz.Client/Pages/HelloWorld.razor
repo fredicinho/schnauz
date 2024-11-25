@@ -1,4 +1,5 @@
-﻿@attribute [Route(Paths.HelloWorld)]
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@attribute [Route(Paths.HelloWorld)]
 
 <PageTitle>Hello World to Grain</PageTitle>
 
@@ -8,18 +9,69 @@
 
 @if (_response == null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>Loading from grain...</em></p>
 }
 else
 {
 <p>@_response.Response</p>
 }
 
+<br/>
+<p>Message via SignalR</p>
+<div>
+    <label>
+        Message to send:
+        <input @bind="_messageInput" size="50" />
+    </label>
+</div>
+<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+
+<p>Messages received through SignalR:</p>
+<p>@_responseMessageFromSignalR</p>
+
 @code {
     private HelloWorldDto? _response;
+    private string? _responseMessageFromSignalR;
+    private string? _messageInput;
+    
+    private HubConnection? _hubConnection;
 
     protected override async Task OnParametersSetAsync()
     {
         _response = await QueryExecutor.Send(new HelloWorldQuery());
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/hello-world"))
+            .Build();
+
+        _hubConnection.On<string>("ReceiveMessage", response =>
+        {
+            _responseMessageFromSignalR = response;
+            StateHasChanged();
+        });
+
+        await _hubConnection.StartAsync();
+    }
+    
+    private async Task Send()
+    {
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.SendAsync("SendMessage", _messageInput);
+        }
+    }
+    
+    public bool IsConnected =>
+        _hubConnection?.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.DisposeAsync();
+        }
     }
 }

@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schnauz.Grains", "Schnauz.G
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schnauz.GrainInterfaces", "Schnauz.GrainInterfaces\Schnauz.GrainInterfaces.csproj", "{775340DB-F814-4EDD-9E09-53D4DACED3F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schnauz.SignalR", "Schnauz.SignalR\Schnauz.SignalR.csproj", "{A495B9C0-9023-4300-A3E0-B0E73324C5E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{775340DB-F814-4EDD-9E09-53D4DACED3F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{775340DB-F814-4EDD-9E09-53D4DACED3F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{775340DB-F814-4EDD-9E09-53D4DACED3F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A495B9C0-9023-4300-A3E0-B0E73324C5E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A495B9C0-9023-4300-A3E0-B0E73324C5E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A495B9C0-9023-4300-A3E0-B0E73324C5E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A495B9C0-9023-4300-A3E0-B0E73324C5E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

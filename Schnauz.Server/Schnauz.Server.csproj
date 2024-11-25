@@ -13,6 +13,7 @@
     <ProjectReference Include="..\Schnauz.CommandHandlers\Schnauz.CommandHandlers.csproj" />
     <ProjectReference Include="..\Schnauz.QueryHandlers\Schnauz.QueryHandlers.csproj" />
     <ProjectReference Include="..\Schnauz.GrainInterfaces\Schnauz.GrainInterfaces.csproj" />
+    <ProjectReference Include="..\Schnauz.SignalR\Schnauz.SignalR.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.4" />
   </ItemGroup>
 
