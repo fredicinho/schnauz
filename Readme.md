@@ -33,6 +33,8 @@ The Schnauz Project is a .NET-based web application that leverages multiple proj
 3. Run the applications (Silo Server and Server). Run the following commands in separate terminals:
 
     ```sh
+    dotnet run --project Schnauz.Silo
     dotnet run --launch-profile "https" --project Schnauz.Server
-    dotnet run --project Schnauz.Server
     ```
+   
+You can choose to run the application without https by using the "http" launch profile.
