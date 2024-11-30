@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.0" />
     <PackageReference Include="Microsoft.Orleans.Client" Version="9.0.1" />
+    <PackageReference Include="MudBlazor" Version="7.15.0" />
     <ProjectReference Include="..\Schnauz.Client\Schnauz.Client.csproj" />
     <ProjectReference Include="..\Schnauz.CommandHandlers\Schnauz.CommandHandlers.csproj" />
     <ProjectReference Include="..\Schnauz.QueryHandlers\Schnauz.QueryHandlers.csproj" />

@@ -1,0 +1,26 @@
+@using Microsoft.AspNetCore.SignalR.Client
+@attribute [Route(Paths.Profile)]
+@page "/profile/{Username}"
+
+<PageTitle>Profile</PageTitle>
+
+<h1>Hello @Username</h1>
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SearchGame">Search game</MudButton>
+
+
+@code
+{
+    [Parameter]
+    public string Username { get; set; }
+    
+    private SearchGameCommand _command = new();
+
+    private async Task SearchGame()
+    {
+        if (await CommandExecutor.Send(_command))
+        {
+            NavigationManager.NavigateTo(Paths.Game);
+        }
+    }
+}

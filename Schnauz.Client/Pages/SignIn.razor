@@ -1,0 +1,40 @@
+@using Microsoft.AspNetCore.SignalR.Client
+@attribute [Route(Paths.SignIn)]
+
+<PageTitle>Sign in</PageTitle>
+
+<h1>Sign In</h1>
+
+<p>Please enter your username to sign in:</p>
+
+<MudForm>
+    <ValidationMessage For="() => _command.Username" />
+    <MudTextField @bind-Value="_command.Username" Label="Username" Variant="Variant.Text"></MudTextField>
+    @if (_isSigningIn)
+    {
+        <p>Signing in...</p>
+    }
+    else
+    {
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Execute">Sign In</MudButton>
+    }
+    <FormValidation/>
+</MudForm>
+
+
+@code
+{
+    private SignInCommand _command = new();
+    private bool _isSigningIn;
+
+    private async Task Execute()
+    {
+        _isSigningIn = true;
+        if (await CommandExecutor.Send(_command))
+        {
+            ToastService.ShowSuccess("Signed in successfully!");
+            NavigationManager.NavigateTo(Paths.Profile.Replace("{Username}", _command.Username));
+        }
+        _isSigningIn = false;
+    }
+}
