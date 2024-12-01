@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.ResponseCompression;
 using Schnauz.Server;
 using Schnauz.Server.Blazor;
+using Schnauz.Shared.Constants;
 using Schnauz.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +30,7 @@ builder.Services.AddResponseCompression(opts =>
     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
         ["application/octet-stream"]);
 });
+builder.Services.AddSingleton<UserConnectionService>();
 
 
 var app = builder.Build();
@@ -57,5 +59,6 @@ app.MapRazorComponents<App>()
     .AddAdditionalAssemblies(typeof(Schnauz.Client._Imports).Assembly);
 
 app.MapHub<HelloWorldHub>(HelloWorldHub.HelloWorldUrl);
+app.MapHub<ProfileHub>(ProfileHubApi.ProfileHubUrl);
 
 app.Run();

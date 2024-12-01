@@ -1,0 +1,18 @@
+
+<MudCard @onclick="SelectCard">
+    <MudCardMedia Image="images/CLUBS-Ace.svg" />
+    <MudCardContent>
+        @Model.ToString()
+    </MudCardContent>
+</MudCard>
+
+@code
+{
+    [Parameter, EditorRequired] public EventCallback<CardDto> OnClick { get; set; }
+    [Parameter, EditorRequired] public CardDto Model { get; set; } = null!;
+
+    private async Task SelectCard()
+    {
+        await OnClick.InvokeAsync(Model);
+    }
+}

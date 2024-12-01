@@ -9,6 +9,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Schnauz.GrainInterfaces\Schnauz.GrainInterfaces.csproj" />
     <ProjectReference Include="..\Schnauz.Shared\Schnauz.Shared.csproj" />
+    
+    <!--TODO: I added this reference only for testing purposes... Remove it if not needed later on-->
+    <ProjectReference Include="..\Schnauz.SignalR\Schnauz.SignalR.csproj" />
   </ItemGroup>
 
   <ItemGroup>

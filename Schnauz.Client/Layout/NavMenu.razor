@@ -1,4 +1,10 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using Schnauz.Client.Services
+@using Schnauz.Client.Services.AppState
+@using Schnauz.Shared.Dtos.enums
+@inject AppStateService AppStateService
+@inject ProfileHubService ProfileHubService
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Schnauz</a>
     </div>
@@ -13,28 +19,63 @@
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
             </NavLink>
         </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="@Paths.Form">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Form
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="@Paths.Weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="@Paths.HelloWorld">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Say Hello to Grain
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="@Paths.SignIn">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Sign in
-            </NavLink>
-        </div>
+        @if (Profile.IsLoggedIn)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="@Paths.Profile">
+                    <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> My Profile
+                </NavLink>
+            </div>
+            
+            @if(UserStateDto.PARTICIPATING_IN_MATCH == Profile.GetUserState())
+            {
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="@Paths.Game">
+                        <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Current Game
+                    </NavLink>
+                </div>
+            }
+            
+            <div class="nav-item px-3">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SignOut">Sign Out</MudButton>
+            </div>
+        }
+        else
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="@Paths.SignIn">
+                    <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Sign in
+                </NavLink>
+            </div>
+        }
     </nav>
 </div>
+
+@code
+{
+    private Profile Profile => AppStateService.Profile;
+    private Match Match => AppStateService.CurrentMatch;
+    
+    protected override void OnInitialized()
+    {
+        Profile.OnChange += StateHasChanged; // Re-render on state change
+        Match.OnChange += StateHasChanged; // Re-render on state change
+    }
+
+    /**
+     *  TODO: Check when this should be called...
+     */
+    public void Dispose()
+    {
+        Profile.OnChange -= StateHasChanged; // Avoid memory leaks
+        Match.OnChange -= StateHasChanged; // Avoid memory leaks
+    }
+    
+    private async Task SignOut()
+    {
+        await ProfileHubService.Disconnect();
+        AppStateService.ResetProfile();
+        NavigationManager.NavigateTo(Paths.SignIn);
+    }
+}
 

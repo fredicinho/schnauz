@@ -1,0 +1,28 @@
+﻿@using Schnauz.Client.Services
+@using Schnauz.Client.Services.AppState
+@using Schnauz.Shared.Dtos.enums
+@attribute [Route(Paths.Game)]
+@inject AppStateService AppStateService
+@inject ProfileHubService ProfileHubService
+
+<PageTitle>Game</PageTitle>
+
+@switch(AppStateService.Profile.GetUserState())
+{
+    case UserStateDto.SEARCHING_A_MATCH:
+        NavigationManager.NavigateTo(Paths.Profile);
+        break;
+    case UserStateDto.SIGNED_IN:
+        NavigationManager.NavigateTo(Paths.Profile);
+        break;
+    default:
+        <h1>Current Game against @AppStateService.CurrentMatch.GetMatchDto()?.Players.Count Players</h1>
+        break;
+}
+
+
+
+@code
+{
+    
+}

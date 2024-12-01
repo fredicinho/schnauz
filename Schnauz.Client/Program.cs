@@ -4,6 +4,7 @@ using Schnauz.Shared.Dtos;
 using Schnauz.Shared.Interfaces;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
+using Schnauz.Client.Services.AppState;
 using Schnauz.Shared;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -20,6 +21,8 @@ builder.Services.AddTransient(sp =>
 });
 builder.Services.AddTransient<IQueryExecutor, QueryExecutor>();
 builder.Services.AddTransient<ICommandExecutor, CommandExecutor>();
+builder.Services.AddSingleton<AppStateService>();
+builder.Services.AddSingleton<ProfileHubService>();
 
 builder.Services.AddFluentValidations(typeof(ValidationErrorDto));
 builder.Services.AddMudServices();

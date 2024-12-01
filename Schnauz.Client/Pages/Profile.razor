@@ -1,26 +1,55 @@
-@using Microsoft.AspNetCore.SignalR.Client
+@using Schnauz.Client.Services
+@using Schnauz.Client.Services.AppState
+@using Schnauz.Shared.Dtos.enums
+@inject AppStateService AppStateService
+@inject ProfileHubService ProfileHubService
 @attribute [Route(Paths.Profile)]
-@page "/profile/{Username}"
 
 <PageTitle>Profile</PageTitle>
 
-<h1>Hello @Username</h1>
+@if (!AppStateService.Profile.IsLoggedIn)
+{
+    <p>Loading profile...</p>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SearchGame">Search match</MudButton>
+}
+else
+{
+    <h1>Hello @AppStateService.Profile.GetUserName()</h1>
 
-<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SearchGame">Search game</MudButton>
+    switch (AppStateService.Profile.GetUserState())
+    {
+        case UserStateDto.SEARCHING_A_MATCH:
+            <p><em>Searching for a match...</em></p>
+            break;
+        case UserStateDto.PARTICIPATING_IN_MATCH:
+            <p><em>Participating in a match...</em></p>
+            <p>Press the button to enter in the match</p>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => NavigationManager.NavigateTo(Paths.Game)">Enter Match</MudButton>
+            break;
+        default:
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SearchGame">Search match</MudButton>
+            break;
+    }
+}
+
+
 
 
 @code
 {
-    [Parameter]
-    public string Username { get; set; }
-    
     private SearchGameCommand _command = new();
 
+    /**
+     * Please don't blame for this... I know it's not the best way to do it.
+     */
     private async Task SearchGame()
     {
+        _command.Username = AppStateService.Profile.GetUserName();
         if (await CommandExecutor.Send(_command))
         {
-            NavigationManager.NavigateTo(Paths.Game);
+            ToastService.ShowSuccess("Searching for a match...");
+        } else {
+            ToastService.ShowError("Failed to search for a match.");
         }
     }
 }

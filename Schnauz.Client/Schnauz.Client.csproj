@@ -31,6 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AdditionalFiles Include="Components\Card\Card.razor" />
     <AdditionalFiles Include="Pages\HelloWorld.razor" />
   </ItemGroup>
 

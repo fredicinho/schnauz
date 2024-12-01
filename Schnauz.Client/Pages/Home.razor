@@ -1,7 +1,10 @@
 ﻿@page "/"
+@using Schnauz.Shared.Dtos.enums
 
 <PageTitle>Home</PageTitle>
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+<Card OnClick="() => { }" Model="new CardDto{ Suit = SuitDto.CLUBS, CardRank = CardRankDto.Ace}"></Card>

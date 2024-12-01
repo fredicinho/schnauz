@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+        <ProjectReference Include="..\Schnauz.Shared\Schnauz.Shared.csproj" />
     </ItemGroup>
 
 </Project>
