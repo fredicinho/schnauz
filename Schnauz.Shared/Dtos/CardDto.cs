@@ -8,5 +8,5 @@ public class CardDto
     
     public CardRankDto CardRank { get; set; }
 
-    public override string ToString() => $"{CardRank} of {Suit}";
+    public override string ToString() => $"{Suit}-{CardRank}";
 }

@@ -4,7 +4,7 @@ namespace Schnauz.Client.Services.AppState;
 
 public class Match
 {
-    private MatchDto? MatchDto { get; set; }
+    public MatchDto? MatchDto { get; private set; }
     
     public event Action? OnChange;
     
@@ -16,5 +16,4 @@ public class Match
         NotifyStateChanged();
     }
     
-    public MatchDto? GetMatchDto() => MatchDto;
 }

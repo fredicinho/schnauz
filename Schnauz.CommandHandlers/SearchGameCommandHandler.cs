@@ -20,19 +20,23 @@ public class SearchGameCommandHandler(IHubContext<ProfileHub> profileHubContext,
                 new (){ UserName = "TestUser2", NumberOfLifePoints = 3, IsOut = false, LastAction = PlayerActionDto.CHANGED_CARD },
                 new () { UserName = "Fredi", NumberOfLifePoints = 3, IsOut = false, LastAction = PlayerActionDto.CHANGED_CARD },
             ],
-            NextTurnUserName = "Fredi",
-            CardsOnTable = [
-            new () { Suit = SuitDto.HEARTS, CardRank = CardRankDto.Eight },
-            new () { Suit = SuitDto.SPADES, CardRank = CardRankDto.King },
-            new () { Suit = SuitDto.DIAMONDS, CardRank = CardRankDto.Jack },
-            ],
-            CardsOnHand = [
-            new (){ Suit = SuitDto.CLUBS, CardRank = CardRankDto.Ace },
-            new (){ Suit = SuitDto.CLUBS, CardRank = CardRankDto.Seven },
-            new (){ Suit = SuitDto.CLUBS, CardRank = CardRankDto.Ten },
-            ],
-            IsMatchOver = false,
-            IsRoundOver = false,
+            MatchStateDto = MatchStateDto.RUNNING,
+            CurrentRound = new()
+            {
+                RoundState = RoundStateDto.RUNNING,
+                NextTurnUserName = command.Username,
+                CardsOnTable = [
+                    new () { Suit = SuitDto.HEARTS, CardRank = CardRankDto.Eight },
+                    new () { Suit = SuitDto.SPADES, CardRank = CardRankDto.King },
+                    new () { Suit = SuitDto.DIAMONDS, CardRank = CardRankDto.Jack },
+                ],
+                CardsOnHand = [
+                    new (){ Suit = SuitDto.CLUBS, CardRank = CardRankDto.Ace },
+                    new (){ Suit = SuitDto.CLUBS, CardRank = CardRankDto.Seven },
+                    new (){ Suit = SuitDto.CLUBS, CardRank = CardRankDto.Ten },
+                ],
+            },
+            RankPlayers = [],
         };
         var profileDto = new ProfileDto
         {

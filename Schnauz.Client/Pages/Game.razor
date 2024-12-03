@@ -1,9 +1,7 @@
-﻿@using Schnauz.Client.Services
-@using Schnauz.Client.Services.AppState
+﻿@using Schnauz.Client.Services.AppState
 @using Schnauz.Shared.Dtos.enums
 @attribute [Route(Paths.Game)]
 @inject AppStateService AppStateService
-@inject ProfileHubService ProfileHubService
 
 <PageTitle>Game</PageTitle>
 
@@ -16,13 +14,108 @@
         NavigationManager.NavigateTo(Paths.Profile);
         break;
     default:
-        <h1>Current Game against @AppStateService.CurrentMatch.GetMatchDto()?.Players.Count Players</h1>
+        <h1>Current Game with @AppStateService.CurrentMatch.MatchDto?.Players.Count Players</h1>
+        <h3>Current Players move: @AppStateService.CurrentMatch.MatchDto?.CurrentRound.NextTurnUserName</h3>
         break;
 }
 
+<div class="game-container">
+    <div class="table">
+        @foreach(var card in AppStateService.CurrentMatch.MatchDto?.CurrentRound.CardsOnTable ?? [])
+        {
+            <Card OnClick="SelectCardOnTable" Model="card" IsSelected="@(card == SelectedCardOnTable)"></Card>
+        }
+    </div>
 
+    @foreach(var player in AppStateService.CurrentMatch.MatchDto?.Players.Where(player => player.UserName != AppStateService.Profile.GetUserName()) ?? [])
+    {
+        <div class="player">
+            <h3>@player.UserName</h3>
+            <div class="player-cards">
+                    <EmptyCard></EmptyCard>
+                    <EmptyCard></EmptyCard>
+                    <EmptyCard></EmptyCard>
+            </div>
+        </div>
+    }
+
+    <div class="own-cards">
+        <h3>@AppStateService.Profile.GetUserName()</h3>
+        <div class="player-cards">
+            @foreach (var card in AppStateService.CurrentMatch.MatchDto?.CurrentRound.CardsOnHand ?? [])
+            {
+            <Card OnClick="SelectCardInHand" Model="card" IsSelected="@(card == SelectedCardInHand)"></Card>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="action-buttons">
+    <MudButton Disabled="@(SelectedCardInHand == null || SelectedCardOnTable == null)" Variant="Variant.Filled" Color="Color.Primary" OnClick="() => ExecuteAction(PlayerActionDto.CHANGED_CARD)">Change Card</MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => ExecuteAction(PlayerActionDto.CHANGED_ALL_CARDS)">Change all cards</MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => ExecuteAction(PlayerActionDto.SHOVE)">Shove</MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => ExecuteAction(PlayerActionDto.CLOSING)">Close</MudButton>
+</div>
 
 @code
 {
+    private CardDto? SelectedCardInHand { get; set; }
+    private CardDto? SelectedCardOnTable { get; set; }
     
+    private ChangeCardCommand _changeCardCommand = new();
+    private ChangeAllCardsCommand _changeAllCardsCommand = new();
+    private ShoveCommand _shoveCommand = new();
+    private CloseCommand _closeCommand = new();
+
+    private void SelectCardInHand(CardDto card)
+    {
+        SelectedCardInHand = card;
+    }
+
+    private void SelectCardOnTable(CardDto card)
+    {
+        SelectedCardOnTable = card;
+    }
+
+    /**
+     * We don't have to check for FIRE and SCHNAUZ,
+     * because this is done in the backend through a change card request.
+     */
+    private async Task ExecuteAction(PlayerActionDto actionDto)
+    {
+        switch (actionDto)
+        {
+            case PlayerActionDto.CHANGED_ALL_CARDS:
+                _changeAllCardsCommand.Username = AppStateService.Profile.GetUserName();
+                await CommandExecutor.Send(_changeAllCardsCommand);
+                break;    
+            case PlayerActionDto.CHANGED_CARD:
+                if (!HasSelectedBothCards())
+                {
+                    ToastService.ShowError("Please select a card from your hand and a card from the table.");
+                    return;
+                }
+                _changeCardCommand.Username = AppStateService.Profile.GetUserName();
+                _changeCardCommand.CardInHand = SelectedCardInHand!;
+                _changeCardCommand.CardOnTable = SelectedCardOnTable!;
+                await CommandExecutor.Send(_changeCardCommand);
+                break;
+            case PlayerActionDto.CLOSING:
+                _closeCommand.Username = AppStateService.Profile.GetUserName();
+                await CommandExecutor.Send(_closeCommand);
+                break;
+            case PlayerActionDto.SHOVE:
+                _shoveCommand.Username = AppStateService.Profile.GetUserName();
+                await CommandExecutor.Send(_shoveCommand);
+                break;
+            default:
+                ToastService.ShowError("Unknown action");
+                break;
+        }
+    }
+    
+    private bool HasSelectedBothCards()
+    {
+        return SelectedCardInHand != null && SelectedCardOnTable != null;
+    }
 }

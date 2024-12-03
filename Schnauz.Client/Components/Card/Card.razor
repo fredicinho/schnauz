@@ -1,15 +1,15 @@
 
-<MudCard @onclick="SelectCard">
-    <MudCardMedia Image="images/CLUBS-Ace.svg" />
-    <MudCardContent>
-        @Model.ToString()
-    </MudCardContent>
-</MudCard>
+<button @onclick="SelectCard" class="button @(IsSelected ? "selected" : "")">
+    <img class="img" src="@ImagePath" alt="@Model.ToString() card"/>
+</button>
 
 @code
 {
     [Parameter, EditorRequired] public EventCallback<CardDto> OnClick { get; set; }
     [Parameter, EditorRequired] public CardDto Model { get; set; } = null!;
+    [Parameter, EditorRequired] public bool IsSelected { get; set; }
+    
+    private string ImagePath => $"images/{Model}.svg";
 
     private async Task SelectCard()
     {

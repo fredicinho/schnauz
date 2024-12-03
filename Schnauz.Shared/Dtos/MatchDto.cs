@@ -1,16 +1,18 @@
+using Schnauz.Shared.Dtos.enums;
+
 namespace Schnauz.Shared.Dtos;
 
 public class MatchDto
 {
     public List<PlayerDto> Players { get; set; } = [];
     
-    public string NextTurnUserName { get; set; } = String.Empty;
+    public MatchStateDto MatchStateDto { get; set; }
     
-    public List<CardDto> CardsOnHand { get; set; } = [];
+    public RoundDto CurrentRound { get; set; } = null!;
     
-    public List<CardDto> CardsOnTable { get; set; } = [];
-
-    public bool IsRoundOver { get; set; } = false;
-
-    public bool IsMatchOver { get; set; } = false;
+    /**
+     * Ranking of players in the match.
+     * We don't care right now if a player has the same score as another player.
+     */
+    public List<string> RankPlayers { get; set; } = [];
 }

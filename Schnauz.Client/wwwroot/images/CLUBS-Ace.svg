@@ -9,8 +9,7 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
-   width="360"
-   height="540"
+   viewBox="0 0 360 540"
    id="svg20298">
   <defs
      id="defs20300">
@@ -58,9 +57,9 @@
        transform="translate(151.42857,-264.27291)"
        id="g3035-04">
       <rect
-         width="359"
-         height="539"
-         rx="29.944447"
+          width="100%"
+          height="100%" 
+          rx="29.944447"
          ry="29.944447"
          x="0.5"
          y="512.86218"

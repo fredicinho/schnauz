@@ -1,0 +1,52 @@
+.game-container {
+    display: grid;
+    grid-template-areas:
+        "player-top-left player-top player-top-right"
+        "player-left table player-right"
+        "player-bottom-left own-cards player-bottom-right";
+    gap: 20px;
+    justify-items: center;
+    align-items: center;
+}
+
+.table {
+    grid-area: table;
+    display: flex;
+    justify-content: center;
+}
+
+.player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.player-cards {
+    display: flex;
+    gap: 8px;
+}
+
+.own-cards {
+    grid-area: own-cards;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-buttons {
+    margin-top: 8px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Additional styles for more players */
+.player:nth-child(1) { grid-area: player-top; }
+.player:nth-child(2) { grid-area: player-right; }
+.player:nth-child(3) { grid-area: player-left; }
+.player:nth-child(4) { grid-area: player-top-left; }
+.player:nth-child(5) { grid-area: player-top-right; }
+.player:nth-child(6) { grid-area: player-bottom-left; }
+.player:nth-child(7) { grid-area: player-bottom-right; }
+/* Add more styles for additional players as needed */

@@ -1,0 +1,13 @@
+.button {
+    width: fit-content;
+}
+
+.img {
+    width: 100px;
+    height: 150px
+}
+
+.selected {
+    border: 2px solid red;
+    border-radius: 10px;
+}
