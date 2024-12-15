@@ -2,6 +2,7 @@ namespace Schnauz.Shared.Dtos.enums;
 
 public enum PlayerActionDto
 {
+    NO_ACTION, // No action done yet
     CHANGED_CARD, // Changed a card
     CHANGED_ALL_CARDS, // Changed all cards
     SHOVE, // No card change but not closing the game

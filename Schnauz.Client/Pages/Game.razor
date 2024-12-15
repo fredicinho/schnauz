@@ -13,52 +13,104 @@
     case UserStateDto.SIGNED_IN:
         NavigationManager.NavigateTo(Paths.Profile);
         break;
-    default:
-        <h1>Current Game with @AppStateService.CurrentMatch.MatchDto?.Players.Count Players</h1>
-        <h3>Current Players move: @AppStateService.CurrentMatch.MatchDto?.CurrentRound.NextTurnUserName</h3>
-        break;
+}
+
+@if(Match?.MatchStateDto == MatchStateDto.FINISHED)
+{
+    <h1>Match finished</h1>
+    <p>Rank list: @Match.RankPlayers.Aggregate("", (acc, player) => acc == "" ? acc + player : acc + ", " + player.ToString())</p>
+    @if (Match?.PlayersWhoRequestedNewMatch.Contains(AppStateService.Profile.GetUserName()) == true)
+    {
+        <p>Waiting for other players to rejoin...</p>
+    }
+    else
+    {
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ResetMatch">New Match</MudButton>
+    }
+}
+else
+{
+    @if(Round?.RoundState == RoundStateDto.FINISHED)
+    {
+        <h2>Round finished</h2>
+        <p>Player(s) @Round.LostPlayers.Aggregate("", (acc, player) => acc == "" ? acc + player : acc + ", " + player.ToString()) lost</p>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="StartNextRound">Next Round</MudButton>
+    }
+    else
+    {
+        <h2>Current Players move: @AppStateService.CurrentMatch.MatchDto?.CurrentRound.ActivePlayer</h2>
+    }
 }
 
 <div class="game-container">
     <div class="table">
-        @foreach(var card in AppStateService.CurrentMatch.MatchDto?.CurrentRound.CardsOnTable ?? [])
-        {
+        <h3>"Table"</h3>
+        <div class="player-cards">
+            @foreach (var card in AppStateService.CurrentMatch.MatchDto?.CurrentRound.CardsOnTable ?? [])
+            {
             <Card OnClick="SelectCardOnTable" Model="card" IsSelected="@(card == SelectedCardOnTable)"></Card>
-        }
+            }
+        </div>
     </div>
 
-    @foreach(var player in AppStateService.CurrentMatch.MatchDto?.Players.Where(player => player.UserName != AppStateService.Profile.GetUserName()) ?? [])
+    @foreach(var player in Match?.Players.Where(player => player.UserName != AppStateService.Profile.GetUserName()) ?? [])
     {
-        <div class="player">
+        <div class="player @(player.UserName == Match?.CurrentRound.ActivePlayer && Round!.RoundState == RoundStateDto.RUNNING ? "active-player" : "")">
             <h3>@player.UserName</h3>
-            <div class="player-cards">
+            @if (Round?.RoundState == RoundStateDto.FINISHED)
+            {
+                <p>Points: @player.NumberOfCardPoints</p>
+            }
+            <p>Life points: @player.NumberOfLifePoints</p>
+            @if (Round?.RoundState == RoundStateDto.FINISHED)
+            {
+                <div class="player-cards">
+                    @foreach (var card in player.CardsInHand)
+                    {
+                        <Card OnClick="() => { }" IsSelected="false" Model="card"></Card>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="player-cards">
                     <EmptyCard></EmptyCard>
                     <EmptyCard></EmptyCard>
                     <EmptyCard></EmptyCard>
-            </div>
+                </div>
+            }
         </div>
     }
 
-    <div class="own-cards">
+    <div class="own-cards @(IsPlayersTurn && Round!.RoundState == RoundStateDto.RUNNING ? "active-player" : "")">
         <h3>@AppStateService.Profile.GetUserName()</h3>
+        @if (Round?.RoundState == RoundStateDto.FINISHED)
+        {
+            <p>Points: @OwnPlayer.NumberOfCardPoints</p>
+        }
+        <p>Life points: @OwnPlayer.NumberOfLifePoints</p>
         <div class="player-cards">
             @foreach (var card in AppStateService.CurrentMatch.MatchDto?.CurrentRound.CardsOnHand ?? [])
             {
-            <Card OnClick="SelectCardInHand" Model="card" IsSelected="@(card == SelectedCardInHand)"></Card>
+                <Card OnClick="SelectCardInHand" Model="card" IsSelected="@(card == SelectedCardInHand)"></Card>
             }
         </div>
     </div>
 </div>
 
 <div class="action-buttons">
-    <MudButton Disabled="@(SelectedCardInHand == null || SelectedCardOnTable == null)" Variant="Variant.Filled" Color="Color.Primary" OnClick="() => ExecuteAction(PlayerActionDto.CHANGED_CARD)">Change Card</MudButton>
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => ExecuteAction(PlayerActionDto.CHANGED_ALL_CARDS)">Change all cards</MudButton>
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => ExecuteAction(PlayerActionDto.SHOVE)">Shove</MudButton>
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => ExecuteAction(PlayerActionDto.CLOSING)">Close</MudButton>
+    <MudButton Disabled="@(SelectedCardInHand == null || SelectedCardOnTable == null || !IsPlayersTurn)" Variant="Variant.Filled" Color="Color.Primary" OnClick="() => ExecuteAction(PlayerActionDto.CHANGED_CARD)">Change Card</MudButton>
+    <MudButton Disabled="@(!IsPlayersTurn)" Variant="Variant.Filled" Color="Color.Primary" OnClick="() => ExecuteAction(PlayerActionDto.CHANGED_ALL_CARDS)">Change all cards</MudButton>
+    <MudButton Disabled="@(!IsPlayersTurn)" Variant="Variant.Filled" Color="Color.Primary" OnClick="() => ExecuteAction(PlayerActionDto.SHOVE)">Shove</MudButton>
+    <MudButton Disabled="@(!IsPlayersTurn)" Variant="Variant.Filled" Color="Color.Primary" OnClick="() => ExecuteAction(PlayerActionDto.CLOSING)">Close</MudButton>
 </div>
 
 @code
 {
+    private MatchDto? Match => AppStateService.CurrentMatch.MatchDto;
+    private RoundDto? Round => AppStateService.CurrentMatch.MatchDto?.CurrentRound;
+    private PlayerDto OwnPlayer => AppStateService.CurrentMatch.MatchDto?.Players.FirstOrDefault(player => player.UserName == AppStateService.Profile.GetUserName())!;
+    
     private CardDto? SelectedCardInHand { get; set; }
     private CardDto? SelectedCardOnTable { get; set; }
     
@@ -66,6 +118,25 @@
     private ChangeAllCardsCommand _changeAllCardsCommand = new();
     private ShoveCommand _shoveCommand = new();
     private CloseCommand _closeCommand = new();
+    private NextRoundCommand _nextRoundCommand = new();
+    private ResetMatchCommand _resetMatchCommand = new();
+    
+    private bool IsPlayersTurn => AppStateService.CurrentMatch.MatchDto?.CurrentRound.ActivePlayer == AppStateService.Profile.GetUserName();
+    
+    protected override void OnInitialized()
+    {
+        AppStateService.Profile.OnChange += StateHasChanged; // Re-render on state change
+        AppStateService.CurrentMatch.OnChange += StateHasChanged; // Re-render on state change
+    }
+
+    /**
+     *  TODO: Check when this should be called...
+     */
+    public void Dispose()
+    {
+        AppStateService.Profile.OnChange -= StateHasChanged; // Avoid memory leaks
+        AppStateService.CurrentMatch.OnChange -= StateHasChanged; // Avoid memory leaks
+    }
 
     private void SelectCardInHand(CardDto card)
     {
@@ -75,6 +146,18 @@
     private void SelectCardOnTable(CardDto card)
     {
         SelectedCardOnTable = card;
+    }
+
+    private async Task StartNextRound()
+    {
+        _nextRoundCommand.Username = AppStateService.Profile.GetUserName();
+        await CommandExecutor.Send(_nextRoundCommand);
+    }
+
+    private async Task ResetMatch()
+    {
+        _resetMatchCommand.Username = AppStateService.Profile.GetUserName();
+        await CommandExecutor.Send(_resetMatchCommand);
     }
 
     /**
@@ -118,4 +201,6 @@
     {
         return SelectedCardInHand != null && SelectedCardOnTable != null;
     }
+    
+}
 }

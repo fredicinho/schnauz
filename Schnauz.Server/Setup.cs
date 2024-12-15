@@ -1,5 +1,5 @@
-﻿using Schnauz.CommandHandlers.Core;
-using Schnauz.QueryHandlers.Core;
+﻿using Schnauz.Server.CommandHandlers.Core;
+using Schnauz.Server.QueryHandlers.Core;
 using Schnauz.Shared.Dtos;
 using Schnauz.Shared.Interfaces;
 using Schnauz.Shared;

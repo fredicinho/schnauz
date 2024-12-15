@@ -10,7 +10,6 @@ public class AppStateService
 
     public void SetProfile(ProfileDto profileDto)
     {
-        Console.WriteLine("My debug output.");
         Profile.SetUserName(profileDto.UserName);
         Profile.SetUserState(profileDto.UserState);
         CurrentMatch.SetMatchDto(profileDto.CurrentMatch);

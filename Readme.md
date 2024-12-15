@@ -38,3 +38,24 @@ The Schnauz Project is a .NET-based web application that leverages multiple proj
     ```
    
 You can choose to run the application without https by using the "http" launch profile.
+
+## Architectural Decisions
+### Same Grain ID of Match and CardDealer
+Both grains use the same ID as they have a one-to-one relationship.
+
+## Challenges during the Project
+
+### Deadlocks through circular calls of grains
+The first challenge we faced was the circular calls of grains. We had a situation where a grain would call another grain, which would call the first grain again. This would cause a deadlock.
+
+
+
+## Future Work
+### Add Authentication
+
+### Add Storageprovider
+
+### Follow Clean Architecture
+Due to simplicity, DTOs, Domain Objects and Entities are mixed in the project. We should separate them.
+
+### Use REST for public API

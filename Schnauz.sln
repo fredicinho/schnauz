@@ -9,17 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Schnauz.Server", "Schnauz.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schnauz.Shared", "Schnauz.Shared\Schnauz.Shared.csproj", "{883DBAD6-F45E-49C7-BA32-8D355A814984}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schnauz.CommandHandlers", "Schnauz.CommandHandlers\Schnauz.CommandHandlers.csproj", "{B0768B54-73F5-4D66-BDB4-3738B517C8D2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schnauz.QueryHandlers", "Schnauz.QueryHandlers\Schnauz.QueryHandlers.csproj", "{253FD365-CD9F-4A31-9AF4-D500AD5895AE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schnauz.Silo", "Schnauz.Silo\Schnauz.Silo.csproj", "{F5203CC4-E616-4D72-AE2B-C53EC382361F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schnauz.Grains", "Schnauz.Grains\Schnauz.Grains.csproj", "{72C4B32C-F67B-4833-A126-1145C22320B8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schnauz.GrainInterfaces", "Schnauz.GrainInterfaces\Schnauz.GrainInterfaces.csproj", "{775340DB-F814-4EDD-9E09-53D4DACED3F5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schnauz.SignalR", "Schnauz.SignalR\Schnauz.SignalR.csproj", "{A495B9C0-9023-4300-A3E0-B0E73324C5E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,14 +33,6 @@ Global
 		{883DBAD6-F45E-49C7-BA32-8D355A814984}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{883DBAD6-F45E-49C7-BA32-8D355A814984}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{883DBAD6-F45E-49C7-BA32-8D355A814984}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B0768B54-73F5-4D66-BDB4-3738B517C8D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B0768B54-73F5-4D66-BDB4-3738B517C8D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B0768B54-73F5-4D66-BDB4-3738B517C8D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B0768B54-73F5-4D66-BDB4-3738B517C8D2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{253FD365-CD9F-4A31-9AF4-D500AD5895AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{253FD365-CD9F-4A31-9AF4-D500AD5895AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{253FD365-CD9F-4A31-9AF4-D500AD5895AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{253FD365-CD9F-4A31-9AF4-D500AD5895AE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F5203CC4-E616-4D72-AE2B-C53EC382361F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F5203CC4-E616-4D72-AE2B-C53EC382361F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5203CC4-E616-4D72-AE2B-C53EC382361F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -59,10 +45,6 @@ Global
 		{775340DB-F814-4EDD-9E09-53D4DACED3F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{775340DB-F814-4EDD-9E09-53D4DACED3F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{775340DB-F814-4EDD-9E09-53D4DACED3F5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A495B9C0-9023-4300-A3E0-B0E73324C5E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A495B9C0-9023-4300-A3E0-B0E73324C5E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A495B9C0-9023-4300-A3E0-B0E73324C5E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A495B9C0-9023-4300-A3E0-B0E73324C5E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

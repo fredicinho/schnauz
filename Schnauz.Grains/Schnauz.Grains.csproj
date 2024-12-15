@@ -9,7 +9,9 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Schnauz.GrainInterfaces\Schnauz.GrainInterfaces.csproj" />
+        <ProjectReference Include="..\Schnauz.Shared\Schnauz.Shared.csproj" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
+        <PackageReference Include="Microsoft.Orleans.Runtime" Version="9.0.1" />
       <PackageReference Include="Microsoft.Orleans.Sdk" Version="9.0.1" />
     </ItemGroup>
 

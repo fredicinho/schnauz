@@ -15,4 +15,6 @@ public class MatchDto
      * We don't care right now if a player has the same score as another player.
      */
     public List<string> RankPlayers { get; set; } = [];
+    
+    public List<string> PlayersWhoRequestedNewMatch { get; set; } = [];
 }

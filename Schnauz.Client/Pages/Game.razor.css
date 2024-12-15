@@ -12,13 +12,18 @@
 .table {
     grid-area: table;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 .player {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.active-player {
+    border: 3px solid red;
 }
 
 .player-cards {
@@ -31,7 +36,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
 }
 
 .action-buttons {

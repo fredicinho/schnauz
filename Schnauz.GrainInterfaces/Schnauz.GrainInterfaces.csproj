@@ -9,6 +9,13 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Orleans.Sdk" Version="9.0.1" />
+        <ProjectReference Include="..\Schnauz.Shared\Schnauz.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Orleans.Transactions">
+        <HintPath>..\..\..\.nuget\packages\microsoft.orleans.transactions\9.0.1\lib\net8.0\Orleans.Transactions.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

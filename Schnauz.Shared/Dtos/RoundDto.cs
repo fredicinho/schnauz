@@ -6,7 +6,7 @@ public class RoundDto
 {
     public RoundStateDto RoundState { get; set; }
     
-    public string NextTurnUserName { get; set; } = String.Empty;
+    public string ActivePlayer { get; set; } = String.Empty;
     
     /**
      * Players who lost that round

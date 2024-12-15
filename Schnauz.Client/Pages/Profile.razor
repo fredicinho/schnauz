@@ -1,8 +1,6 @@
-@using Schnauz.Client.Services
 @using Schnauz.Client.Services.AppState
 @using Schnauz.Shared.Dtos.enums
 @inject AppStateService AppStateService
-@inject ProfileHubService ProfileHubService
 @attribute [Route(Paths.Profile)]
 
 <PageTitle>Profile</PageTitle>
@@ -10,7 +8,7 @@
 @if (!AppStateService.Profile.IsLoggedIn)
 {
     <p>Loading profile...</p>
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SearchGame">Search match</MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SearchMatch">Search match</MudButton>
 }
 else
 {
@@ -20,6 +18,7 @@ else
     {
         case UserStateDto.SEARCHING_A_MATCH:
             <p><em>Searching for a match...</em></p>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CancelSearch">Cancel search...</MudButton>
             break;
         case UserStateDto.PARTICIPATING_IN_MATCH:
             <p><em>Participating in a match...</em></p>
@@ -27,7 +26,7 @@ else
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => NavigationManager.NavigateTo(Paths.Game)">Enter Match</MudButton>
             break;
         default:
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SearchGame">Search match</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SearchMatch">Search match</MudButton>
             break;
     }
 }
@@ -37,19 +36,44 @@ else
 
 @code
 {
-    private SearchGameCommand _command = new();
+    private SearchMatchCommand _searchCommand = new();
+    private CancelSearchMatchCommand _cancelSearchCommand = new();
+    
+    protected override void OnInitialized()
+    {
+        AppStateService.Profile.OnChange += StateHasChanged; // Re-render on state change
+        AppStateService.CurrentMatch.OnChange += StateHasChanged; // Re-render on state change
+    }
 
     /**
-     * Please don't blame for this... I know it's not the best way to do it.
+     *  TODO: Check when this should be called...
      */
-    private async Task SearchGame()
+    public void Dispose()
     {
-        _command.Username = AppStateService.Profile.GetUserName();
-        if (await CommandExecutor.Send(_command))
+        AppStateService.Profile.OnChange -= StateHasChanged; // Avoid memory leaks
+        AppStateService.CurrentMatch.OnChange -= StateHasChanged; // Avoid memory leaks
+    }
+    
+    private async Task SearchMatch()
+    {
+        _searchCommand.Username = AppStateService.Profile.GetUserName();
+        _searchCommand.Region = RegionDto.EUROPE;
+        if (await CommandExecutor.Send(_searchCommand))
         {
-            ToastService.ShowSuccess("Searching for a match...");
+            
         } else {
             ToastService.ShowError("Failed to search for a match.");
+        }
+    }
+    
+    private async Task CancelSearch()
+    {
+        _cancelSearchCommand.Username = AppStateService.Profile.GetUserName();
+        if (await CommandExecutor.Send(_cancelSearchCommand))
+        {
+            
+        } else {
+            ToastService.ShowError("Failed to cancel search.");
         }
     }
 }

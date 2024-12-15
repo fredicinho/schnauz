@@ -1,5 +1,11 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using Schnauz.Grains.Services;
+using StackExchange.Redis;
 
 try
 {
@@ -23,9 +29,47 @@ static async Task<IHost> StartSiloAsync()
         {
             c.UseLocalhostClustering()
                 // Use in-memory storage
-                .AddMemoryGrainStorageAsDefault()
+                // .AddMemoryGrainStorage("schnauz")
+                .AddRedisGrainStorage(name: "schnauz", configureOptions: options =>
+                {
+                    options.ConfigurationOptions = new ConfigurationOptions();
+                    options.ConfigurationOptions.EndPoints.Add("localhost", 6379);
+                })
+                .UseTransactions()
                 .ConfigureLogging(logging => logging.AddConsole());
         });
+    
+    builder.ConfigureServices(services =>
+    {
+        services.AddHttpClient<SendGameMatchService>();
+        services.AddTransient<SendGameMatchService>();
+        services.AddOpenTelemetry()
+            .ConfigureResource(r =>
+            {
+                r.AddService("Silo Server",
+                    serviceVersion: "MyVersion",
+                    serviceInstanceId: Environment.MachineName);
+            })
+            .WithTracing(builder => builder
+                .SetSampler(new AlwaysOnSampler())
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddSource("Microsoft.Orleans.Runtime")
+                .AddSource("Microsoft.Orleans.Application")
+                .AddOtlpExporter(opt =>
+                {
+                    opt.Endpoint = new Uri("http://localhost:4317");
+                })
+            )
+            .WithMetrics(builder => builder
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddOtlpExporter(opt =>
+                {
+                    opt.Endpoint = new Uri("http://localhost:4317");
+                })
+            );
+    });
 
     var host = builder.Build();
     await host.StartAsync();
