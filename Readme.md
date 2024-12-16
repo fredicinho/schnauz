@@ -31,6 +31,11 @@ A multiplayer card game implemented using the Actor Model with Orleans. Check ou
    
 You can choose to run the application without https by using the "http" launch profile.
 
+Open the browser and navigate to `https://localhost:7264/` to play the game. 
+Sign in with a username and search for a game. You can open multiple tabs to simulate multiple players.
+
+Open the browser and navigate to `http://localhost:16686/` to view the traces in Jaeger.
+
 ## Project Structure
 
 - `Schnauz.Server`: The main server-side project, which includes the Frontend, Backend and Grain Client.
