@@ -1,6 +1,7 @@
 # Schnauz
 A multiplayer card game implemented using the Actor Model with Orleans. Check out the following link to learn more about the game: [Schnauz](https://en.wikipedia.org/wiki/Schwimmen).
 
+![Alt Text](images/record.gif)
 
 ## Overview
 
