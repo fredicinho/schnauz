@@ -13,6 +13,4 @@ public class CardDealerState
     public int IndexOfCurrentPlayer = 0;
     
     public RoundStateDto RoundState = RoundStateDto.RUNNING;
-    
-    public List<string> PlayersLost = [];
 }
