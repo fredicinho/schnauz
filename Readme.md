@@ -10,7 +10,7 @@ A multiplayer card game implemented using the Actor Model with Orleans. Check ou
 
 ## Getting Started
 
-1. Open a terminal.
+1. Open a terminal and navigate to the project root directory.
 2. Start redis and jaeger with docker-compose:
 
     ```sh
@@ -32,22 +32,29 @@ A multiplayer card game implemented using the Actor Model with Orleans. Check ou
 You can choose to run the application without https by using the "http" launch profile.
 
 Open the browser and navigate to `https://localhost:7264/` to play the game. 
-Sign in with a username and search for a game. You can open multiple tabs to simulate multiple players.
+Sign in with a username and search for a match. You can open multiple tabs to simulate multiple players.
 
 Open the browser and navigate to `http://localhost:16686/` to view the traces in Jaeger.
 
-## Project Structure
+## Glossary
 
-- `Schnauz.Server`: The main server-side project, which includes the Frontend, Backend and Grain Client.
-- `Schnauz.Client`: The frontend.
-- `Schnauz.Shared`: Shared components and utilities between frontend, backend and silo.
-- `Schnauz.Grains`: The Grain implementations.
-- `Schnauz.GrainInterfaces`: The interfaces for the Grains.
-- `Schnauz.Silo`: The Silo Server.
+| Term   | Description |
+|--------|-------------|
+| **Match** | A match is a game session where players play against each other. It consists of multiple rounds. |
+| **Round** | A round is a single game session where players play until they close or the round ends. After each round there is usually one winner (but can also be more) and the loser loses a life. |
+| **Life** | A player has three lives. If a player loses all three lives, he swims. If he then loses again, he is out of the match. |
+| **Player** | A player is a participant in a match. A player has a username and a score (life). |
 
 ## System Architecture
 ![Alt text](images/schnauz.drawio.png)
 
+## Project Structure
+- `Schnauz.Server`: The main server-side project. It includes the whole application: Schnauz.Client (Frontend), Backend and Grain Client.
+- `Schnauz.Client`: Consists of the frontend components which is a Blazor WebAssembly project.
+- `Schnauz.Shared`: Shared components and utilities between frontend, backend and silo.
+- `Schnauz.Grains`: The Grain implementations that run on the Schnauz.Silo.
+- `Schnauz.GrainInterfaces`: The interfaces for the Grains. It is shared between the Schnauz.Server and Schnauz.Grains.
+- `Schnauz.Silo`: The Silo Server.
 
 ## Actor Model Architecture
 ![Alt text](images/actor-architecture.drawio.png)
@@ -57,7 +64,7 @@ Open the browser and navigate to `http://localhost:16686/` to view the traces in
 ### Use Match grain and CardDealer grain
 
 #### Context and Problem Statement
-The Match grain is responsible for managing the game state. It could be responsible for dealing cards as well.
+The Match grain is responsible for managing the match state. It could be responsible for dealing cards as well.
 However, the Match grain could become too complex if it is responsible for dealing cards.
 How should the grains be designed to reflect this relationship?
 
@@ -76,7 +83,7 @@ Chosen option: Use a separate CardDealer grain to deal cards.
 #### Context and Problem Statement
 
 The Match and CardDealer grains have a one-to-one relationship. 
-The Match grain is responsible for managing the game state, while the CardDealer grain is responsible for dealing cards. 
+The Match grain is responsible for managing the match state, while the CardDealer grain is responsible for dealing cards. 
 The CardDealer grain is only used by the Match grain.
 How should the grains be designed to reflect this relationship?
 
@@ -93,7 +100,7 @@ Chosen option: Use the same Grain ID for both grains.
 
 #### Context and Problem Statement
 
-The Match grain needs to communicate with the server to update the game state.
+The Match grain needs to communicate with the server to update the match state.
 How should the Match grain communicate with the server?
 
 #### Considered Options
@@ -124,7 +131,7 @@ The question arose of where the domain logic should be implemented.
 Of course, the most important thing is that the domain logic should be implemented in the grain, but 
 the question arose of whether the server should also have domain logic.
 We decided to implement the domain logic in the grain and only use the server for communication.
-But we also implemented some domain logic on the server side to validate the game state.
+But we also implemented some domain logic on the server side to validate the match state.
 
 
 ## Future Work
