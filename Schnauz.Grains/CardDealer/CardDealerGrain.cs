@@ -85,7 +85,6 @@ public class CardDealerGrain(
         cardDealerState.State.Players = players;
         cardDealerState.State.IndexOfCurrentPlayer = startingPlayerIndex;
         cardDealerState.State.RoundState = RoundStateDto.RUNNING;
-        cardDealerState.State.PlayersLost = [];
         cardDealerState.State.Players.ForEach(player =>
         {
             var playerGrain = grainFactory.GetGrain<IPlayer>(player);
@@ -115,7 +114,6 @@ public class CardDealerGrain(
         if (await RoundIsOver())
         {
             cardDealerState.State.RoundState = RoundStateDto.FINISHED;
-            cardDealerState.State.PlayersLost = await GetPlayersWhoLostRound();
             await cardDealerState.WriteStateAsync();
         }
         else
